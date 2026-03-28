@@ -505,21 +505,18 @@
   <script>
 
     // ── Splash screen ────────────────────────────────────────────────
-    window.addEventListener('load', function() {
-      // Small extra delay so the animation plays at least once (min 1.8s)
-      const minDelay = 1800;
-      const startTime = Date.now();
-      const elapsed = Date.now() - startTime;
-      const remaining = Math.max(0, minDelay - elapsed);
+const splashStart = performance.now();
+window.addEventListener('load', function() {
+  const elapsed = performance.now() - splashStart;
+  const remaining = Math.max(0, 1800 - elapsed);
 
-      setTimeout(function() {
-        const splash = document.getElementById('splash');
-        splash.classList.add('splash-hide');
-        document.body.classList.remove('splash-active');
-        // Remove from DOM after transition completes
-        setTimeout(() => splash.remove(), 750);
-      }, remaining + minDelay);
-    });
+  setTimeout(function() {
+    const splash = document.getElementById('splash');
+    splash.classList.add('splash-hide');
+    document.body.classList.remove('splash-active');
+    setTimeout(() => splash.remove(), 750);
+  }, remaining);
+});
 
     // ── Gallery toggle ──────────────────────────────────────────────
     const galleryBtn  = document.getElementById('galleryNavBtn');
