@@ -540,38 +540,58 @@ section {
 
 /* Inner panel styling */
 .full-menu-inner {
-  background: #fff;
-  border: 1px solid rgba(147, 112, 219, 0.25);
-  border-radius: 16px;
-  padding: 32px 36px;
+  background: linear-gradient(160deg, #160827 0%, #250d45 100%);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 20px;
+  padding: 36px 40px 40px;
   margin-top: 24px;
-  box-shadow: 0 6px 24px rgba(147, 112, 219, 0.1);
-  max-width: 600px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  max-width: 620px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .full-menu-title {
-  font-family: 'Poppins', sans-serif;
-  color: #4B0082;
-  font-size: 1.3rem;
-  margin-bottom: 4px;
+  font-family: 'Cormorant', serif;
+  color: #e8c84a;
+  font-size: 2rem;
+  font-weight: 700;
+  font-style: italic;
+  margin-bottom: 6px;
   text-align: center;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 16px rgba(232, 200, 74, 0.25);
 }
 
 .full-menu-subtitle {
-  color: #888;
+  color: rgba(255,255,255,0.45);
+  font-family: 'Open Sans', sans-serif;
   font-size: 0.85rem;
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 6px;
+}
+
+.full-menu-subtitle::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e8c84a, transparent);
+  margin: 14px auto 26px;
+  opacity: 0.6;
 }
 
 /* Each menu row */
 .full-menu-row {
   display: flex;
-  align-items: baseline;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(147, 112, 219, 0.1);
+  align-items: center;
+  padding: 13px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  transition: background 0.18s ease;
+}
+.full-menu-row:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .full-menu-row:last-child {
@@ -580,48 +600,54 @@ section {
 
 .fm-name {
   font-family: 'Open Sans', sans-serif;
-  font-size: 0.97rem;
-  color: #333;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
 }
 
-/* Dotted line between name and price */
+/* Line between name and price */
 .fm-dots {
   flex: 1;
-  border-bottom: 2px dotted rgba(147, 112, 219, 0.35);
-  margin: 0 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0 14px;
   position: relative;
-  top: -4px;
+  top: -2px;
 }
 
 .fm-price {
   font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: #9370DB;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: #160827;
+  background: #e8c84a;
+  padding: 4px 13px;
+  border-radius: 20px;
   white-space: nowrap;
+  letter-spacing: 0.2px;
+  box-shadow: 0 2px 8px rgba(232, 200, 74, 0.25);
 }
 
-/* ── Category headers inside the full menu ── */
+/* ── Category headers ── */
 .fm-category-header {
   font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-size: 1rem;
-  color: #fff;
-  background: linear-gradient(135deg, #9370DB, #6A0DAD);
-  padding: 8px 18px;
-  border-radius: 8px;
-  margin: 22px 0 6px;
-  letter-spacing: 0.5px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.85);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 18px;
+  border-radius: 10px;
+  margin: 26px 0 6px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 3px 10px rgba(147, 112, 219, 0.3);
+  gap: 10px;
+  width: 100%;
 }
 
 .fm-category-header:first-of-type {
-  margin-top: 4px;
+  margin-top: 0;
 }
 
 .fm-category-icon {
@@ -631,7 +657,7 @@ section {
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .full-menu-inner {
-    padding: 24px 20px;
+    padding: 28px 20px 32px;
   }
   .fm-name,
   .fm-price {
