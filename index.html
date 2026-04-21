@@ -115,6 +115,70 @@
       overflow: hidden;
     }
   </style>
+
+  <!-- Menu section — tab & image-wrap styles -->
+  <style>
+    /* ── Specialty card image wrapper ──────────────────────────────
+       Fixed aspect ratio so all cards are the same height regardless
+       of source image dimensions. Works on every screen size.       */
+    .menu-card-img-wrap {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    .menu-card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+    .menu-card:hover .menu-card-img-wrap img {
+      transform: scale(1.05);
+    }
+
+    /* ── Full-menu tab nav ─────────────────────────────────────────
+       Horizontally scrollable pill tabs — works on narrow phones too */
+    .fm-tabs {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 8px;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      scrollbar-width: none;          /* Firefox */
+      -ms-overflow-style: none;       /* IE / Edge */
+    }
+    .fm-tabs::-webkit-scrollbar { display: none; }
+
+    .fm-tab-btn {
+      flex-shrink: 0;
+      padding: 7px 18px;
+      border-radius: 50px;
+      border: 2px solid var(--bs-purple, #6f42c1);
+      background: transparent;
+      color: var(--bs-purple, #6f42c1);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .fm-tab-btn.active,
+    .fm-tab-btn:hover {
+      background: var(--bs-purple, #6f42c1);
+      color: #fff;
+    }
+
+    /* ── Tab panes ─────────────────────────────────────────────── */
+    .fm-pane        { display: none; }
+    .fm-pane.active { display: block; }
+
+    /* ── Italic helper for special-order items ─────────────────── */
+    .fm-italic { font-style: italic; }
+  </style>
 </head>
 <body class="splash-active">
 
@@ -164,322 +228,193 @@
     </a>
   </section>
 
-  <!-- Menu Section — price tags added below each dish -->
+  <!-- ═══════════════════════════════════════════════════════════════════
+       MENU SECTION
+       ─────────────────────────────────────────────────────────────────
+       HOW TO EXTEND THIS MENU:
+       • Specialties grid  → edit the SPECIALTIES array in the <script>
+         block at the bottom of this section (one object per card).
+       • Full menu tabs    → edit the FULL_MENU object in the same script.
+         Each key is a tab label; its value is an array of {name, price}.
+         Adding a new category = adding one new key + array. Done.
+       • No HTML needs to change — the JS renders everything automatically.
+       ═══════════════════════════════════════════════════════════════════ -->
   <section id="menu" class="container py-5 menu">
     <h2 class="text-center mb-4">Our Specialties</h2>
-    <div class="row g-4">
 
-      <div class="col-sm-6 col-md-4">
-        <div class="menu-card">
-          <img src="fish.jpeg" alt="Fish" class="img-fluid">
-          <h5 class="mt-2 text-center">Fish</h5>
-          <p class="price-tag">KSh 600</p>
-        </div>
-      </div>
+    <!-- Specialties grid — rendered by JS -->
+    <div class="row g-4" id="specialtiesGrid"></div>
 
-      <div class="col-sm-6 col-md-4">
-        <div class="menu-card">
-          <img src="samosa.jpg" alt="Samosas" class="img-fluid">
-          <h5 class="mt-2 text-center">Samosas</h5>
-          <p class="price-tag">KSh 50</p>
-        </div>
-      </div>
-
-      <div class="col-sm-6 col-md-4">
-        <div class="menu-card">
-          <img src="chapati.jpeg" alt="Chapatis" class="img-fluid">
-          <h5 class="mt-2 text-center">Chapatis</h5>
-          <p class="price-tag">KSh 60</p>
-        </div>
-      </div>
-
-      <div class="col-sm-6 col-md-4">
-        <div class="menu-card">
-          <img src="springrolls.jpeg" alt="Spring Rolls" class="img-fluid">
-          <h5 class="mt-2 text-center">Spring Rolls</h5>
-          <p class="price-tag">KSh 150</p>
-        </div>
-      </div>
-
-      <div class="col-sm-6 col-md-4">
-        <div class="menu-card">
-          <img src="pancakes.jpeg" alt="Pancakes" class="img-fluid">
-          <h5 class="mt-2 text-center">Pancakes</h5>
-          <p class="price-tag">KSh 100</p>
-        </div>
-      </div>
-
-      <div class="col-sm-6 col-md-4">
-        <div class="menu-card">
-          <img src="matoke.jpeg" alt="Matoke" class="img-fluid">
-          <h5 class="mt-2 text-center">Matoke</h5>
-          <p class="price-tag">KSh 150</p>
-        </div>
-      </div>
-
-
-    </div><!-- end specialties row -->
-
-    <!-- ── Full Menu Toggle Button ── -->
+    <!-- Full Menu Toggle Button -->
     <div class="text-center mt-5">
       <button class="btn btn-full-menu" id="fullMenuBtn">
         View Full Menu <span class="full-menu-arrow">▾</span>
       </button>
     </div>
 
-    <!-- ── Full Menu Collapsible Panel ── -->
+    <!-- Full Menu Collapsible Panel -->
     <div id="fullMenuPanel" class="full-menu-panel full-menu-hidden">
       <div class="full-menu-inner">
-
         <h4 class="full-menu-title">Full Menu</h4>
         <p class="full-menu-subtitle">All prices are per serving unless stated otherwise.</p>
 
-        <!-- SNACKS -->
-        <div class="fm-category-header">
-          <span class="fm-category-icon"></span> Snacks
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Samosas</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 50</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Spring Rolls</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 150</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Mandazi</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 20</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Chapatis</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 60</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Pancakes</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 100</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Eggs</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 80</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">sausages</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 50</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">kebab</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 100</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Nduma/Ngwaci</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 100</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Chips</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 150</span>
-        </div>
+        <!-- Tab nav — rendered by JS -->
+        <div class="fm-tabs" id="fmTabs" role="tablist"></div>
 
-        
-        <!-- MAIN DISHES -->
-        <div class="fm-category-header">
-          <span class="fm-category-icon"></span> Main Dishes
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Fish</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 600</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Chicken</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 450</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Pilau</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 350</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Githeri Plain</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 150</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Githeri Special</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 250</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Beans Plain</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 150</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Njahi Plain</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 120</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Minji Plain</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 150</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Plain rice</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 100</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Vegetable Rice</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 200</span>
-        </div>
-
-         <!-- VEGETABLES -->
-        <div class="fm-category-header">
-          <span class="fm-category-icon"></span> Vegetables
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Cabbage</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 50</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Managu</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 100</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Sagaa</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 120</span>
-        </div>
-
-
-       <!-- VEGETABLES -->
-        <div class="fm-category-header">
-          <span class="fm-category-icon"></span> Vegetables
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Cabbage</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 50</span>
-        </div>
-
-         <!-- VEGETABLES -->
-        <div class="fm-category-header">
-          <span class="fm-category-icon"></span> Vegetables
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Cabbage</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 50</span>
-        </div>
-
-         <!-- VEGETABLES -->
-        <div class="fm-category-header">
-          <span class="fm-category-icon"></span> Vegetables
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Cabbage</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 50</span>
-        </div>
-
-         <!-- VEGETABLES -->
-        <div class="fm-category-header">
-          <span class="fm-category-icon"></span> Vegetables
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Cabbage</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 50</span>
-        </div>
-
-        <!-- SIDE ORDERS -->
-        <div class="fm-category-header">
-          <span class="fm-category-icon"></span> Side Orders
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Ugali White</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 80</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Ugali Brown</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 100</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Matoke Plain</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 150</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Matoke Special</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 250</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Mukimo Plain</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 150</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Mukimo Special</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 200</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Roast Potatoes</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 150</span>
-        </div>
-
-         <!-- PLATTER -->
-        <div class="fm-category-header">
-          <span class="fm-category-icon"></span> Platters
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name">Pilau,Chips,Beef 1/4,2 sausages</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">KSh 50</span>
-        </div>
-
-        <!-- SPECIAL ORDERS -->
-        <div class="fm-category-header">
-          <span class="fm-category-icon"></span> Special Orders
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name" style="font-style:italic;">Office Breakfast Plans</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">On request</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name" style="font-style:italic;">Traditional Greens (Variety)</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">On request</span>
-        </div>
-        <div class="full-menu-row">
-          <span class="fm-name" style="font-style:italic;">Custom Meal Timetables</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">On request</span>
-        </div>
-
+        <!-- Tab content panes — rendered by JS -->
+        <div id="fmPanes"></div>
       </div>
     </div>
-
   </section>
+
+  <script>
+    /* ─────────────────────────────────────────────────────────────────
+       MENU DATA
+       To add a specialty card: push a new object into SPECIALTIES.
+       To add a full-menu category: add a new key to FULL_MENU with an
+       array of { name, price } items. That's it — no HTML to touch.
+    ───────────────────────────────────────────────────────────────── */
+    const SPECIALTIES = [
+      { img: 'fish.jpeg',        alt: 'Fish',        name: 'Fish',        price: 'KSh 600' },
+      { img: 'samosa.jpg',       alt: 'Samosas',     name: 'Samosas',     price: 'KSh 50'  },
+      { img: 'chapati.jpeg',     alt: 'Chapatis',    name: 'Chapatis',    price: 'KSh 60'  },
+      { img: 'springrolls.jpeg', alt: 'Spring Rolls',name: 'Spring Rolls',price: 'KSh 150' },
+      { img: 'pancakes.jpeg',    alt: 'Pancakes',    name: 'Pancakes',    price: 'KSh 100' },
+      { img: 'matoke.jpeg',      alt: 'Matoke',      name: 'Matoke',      price: 'KSh 150' },
+    ];
+
+    const FULL_MENU = {
+      'Snacks': [
+        { name: 'Samosas',        price: 'KSh 50'  },
+        { name: 'Spring Rolls',   price: 'KSh 150' },
+        { name: 'Mandazi',        price: 'KSh 20'  },
+        { name: 'Chapatis',       price: 'KSh 60'  },
+        { name: 'Pancakes',       price: 'KSh 100' },
+        { name: 'Eggs',           price: 'KSh 80'  },
+        { name: 'Sausages',       price: 'KSh 50'  },
+        { name: 'Kebab',          price: 'KSh 100' },
+        { name: 'Nduma / Ngwaci', price: 'KSh 100' },
+        { name: 'Chips',          price: 'KSh 150' },
+      ],
+      'Main Dishes': [
+        { name: 'Fish',            price: 'KSh 600' },
+        { name: 'Chicken',         price: 'KSh 450' },
+        { name: 'Pilau',           price: 'KSh 350' },
+        { name: 'Githeri Plain',   price: 'KSh 150' },
+        { name: 'Githeri Special', price: 'KSh 250' },
+        { name: 'Beans Plain',     price: 'KSh 150' },
+        { name: 'Njahi Plain',     price: 'KSh 120' },
+        { name: 'Minji Plain',     price: 'KSh 150' },
+        { name: 'Plain Rice',      price: 'KSh 100' },
+        { name: 'Vegetable Rice',  price: 'KSh 200' },
+      ],
+      'Vegetables': [
+        { name: 'Cabbage', price: 'KSh 50'  },
+        { name: 'Managu',  price: 'KSh 100' },
+        { name: 'Sagaa',   price: 'KSh 120' },
+      ],
+      'Sides': [
+        { name: 'Ugali White',    price: 'KSh 80'  },
+        { name: 'Ugali Brown',    price: 'KSh 100' },
+        { name: 'Matoke Plain',   price: 'KSh 150' },
+        { name: 'Matoke Special', price: 'KSh 250' },
+        { name: 'Mukimo Plain',   price: 'KSh 150' },
+        { name: 'Mukimo Special', price: 'KSh 200' },
+        { name: 'Roast Potatoes', price: 'KSh 150' },
+      ],
+      'Mbuzi Corner': [
+        { name: 'Dry Fry — Plain',      price: 'KSh 300' },
+        { name: 'Dry Fry with Ugali',   price: 'KSh 450' },
+        { name: 'Dry Fry with Rice',    price: 'KSh 470' },
+        { name: 'Dry Fry with Mukimo',  price: 'KSh 470' },
+        { name: 'Dry Fry with Chapati', price: 'KSh 430' },
+        { name: 'Dry Fry with Chips',   price: 'KSh 500' },
+        { name: 'Wet Fry — Plain',      price: 'KSh 320' },
+        { name: 'Wet Fry with Ugali',   price: 'KSh 420' },
+        { name: 'Wet Fry with Rice',    price: 'KSh 450' },
+        { name: 'Wet Fry with Mukimo',  price: 'KSh 480' },
+        { name: 'Wet Fry with Chapati', price: 'KSh 370' },
+        { name: 'Wet Fry with Chips',   price: 'KSh 450' },
+      ],
+      'Platters': [
+        { name: 'Pilau, Chips, Beef ¼, 2 Sausages', price: 'KSh 650' },
+      ],
+      'Special Orders': [
+        { name: 'Office Breakfast Plans',       price: 'On request', italic: true },
+        { name: 'Traditional Greens (Variety)', price: 'On request', italic: true },
+        { name: 'Custom Meal Timetables',       price: 'On request', italic: true },
+      ],
+    };
+
+    /* ─── Render Specialties Grid ─────────────────────────────────── */
+    const grid = document.getElementById('specialtiesGrid');
+    SPECIALTIES.forEach(item => {
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="col-6 col-md-4">
+          <div class="menu-card">
+            <div class="menu-card-img-wrap">
+              <img src="${item.img}" alt="${item.alt}" loading="lazy">
+            </div>
+            <h5 class="mt-2 text-center">${item.name}</h5>
+            <p class="price-tag">${item.price}</p>
+          </div>
+        </div>
+      `);
+    });
+
+    /* ─── Render Full Menu Tabs ───────────────────────────────────── */
+    const tabNav   = document.getElementById('fmTabs');
+    const tabPanes = document.getElementById('fmPanes');
+    const categories = Object.keys(FULL_MENU);
+
+    categories.forEach((cat, i) => {
+      const id = 'fm-tab-' + i;
+      const isActive = i === 0;
+
+      /* Tab button */
+      tabNav.insertAdjacentHTML('beforeend', `
+        <button class="fm-tab-btn${isActive ? ' active' : ''}"
+                role="tab"
+                aria-selected="${isActive}"
+                aria-controls="${id}"
+                data-tab="${id}">
+          ${cat}
+        </button>
+      `);
+
+      /* Tab pane */
+      const rows = FULL_MENU[cat].map(item => `
+        <div class="full-menu-row">
+          <span class="fm-name${item.italic ? ' fm-italic' : ''}">${item.name}</span>
+          <span class="fm-dots"></span>
+          <span class="fm-price">${item.price}</span>
+        </div>
+      `).join('');
+
+      tabPanes.insertAdjacentHTML('beforeend', `
+        <div class="fm-pane${isActive ? ' active' : ''}" id="${id}" role="tabpanel">
+          ${rows}
+        </div>
+      `);
+    });
+
+    /* ─── Tab click handler ───────────────────────────────────────── */
+    tabNav.addEventListener('click', function(e) {
+      const btn = e.target.closest('.fm-tab-btn');
+      if (!btn) return;
+      const targetId = btn.dataset.tab;
+
+      tabNav.querySelectorAll('.fm-tab-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      tabPanes.querySelectorAll('.fm-pane').forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      document.getElementById(targetId).classList.add('active');
+    });
+  </script>
 
   <!-- About Section -->
   <section id="about" class="container py-5">
