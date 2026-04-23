@@ -361,6 +361,7 @@
     #searchResults {
       display: none;
       padding: 20px 28px;
+      background: #160827;
     }
     #searchResults.active { display: block; }
     .search-result-cat {
@@ -417,17 +418,26 @@
     @media (max-width: 640px) {
       .fm-sidebar { display: none; }
       .fm-content { display: none; }
-      .fm-accordion { display: block; }
-      .full-menu-header { padding: 22px 20px 16px; }
-      .full-menu-header h3 { font-size: 1.6rem; }
-      .fm-body { min-height: unset; }
-      #searchResults { padding: 12px 20px; }
+      .fm-body { display: none; }
+      .fm-accordion { display: block; background: #160827; }
+      .full-menu-header { padding: 20px 18px 14px; }
+      .full-menu-header h3 { font-size: 1.5rem; }
+      .full-menu-wrap { border-radius: 14px; }
+      #searchResults { padding: 12px 16px; background: #160827; }
+      .no-results { padding: 24px 0; }
     }
     @media (max-width: 480px) {
       .spec-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        gap: 10px;
       }
+      .spec-card-name { font-size: 0.82rem; }
+      .spec-price-pill { font-size: 0.74rem; padding: 3px 10px; }
+      .fm-acc-header { padding: 13px 16px; font-size: 0.83rem; }
+      .fm-acc-body.open { padding: 6px 14px 4px; }
+      .fm-row-name { font-size: 0.84rem; }
+      .fm-row-price { font-size: 0.72rem; padding: 3px 9px; }
+      #menuSearch { font-size: 0.84rem; padding: 9px 12px 9px 36px; }
     }
   </style>
 
@@ -455,9 +465,11 @@
         <nav class="fm-sidebar" id="fmSidebar" aria-label="Menu categories"></nav>
         <div class="fm-content" id="fmContent">
           <div id="fmPanes"></div>
-          <div id="searchResults"></div>
         </div>
       </div>
+
+      <!-- Search results — shown across both desktop and mobile -->
+      <div id="searchResults"></div>
 
       <!-- Mobile: accordion -->
       <div class="fm-accordion" id="fmAccordion"></div>
@@ -652,19 +664,37 @@
     const fmPanes       = document.getElementById('fmPanes');
     const fmSidebar     = document.getElementById('fmSidebar');
 
+    const fmBody = document.querySelector('.fm-body');
+
     searchInput.addEventListener('input', function() {
       const q = this.value.trim().toLowerCase();
+      const isMobile = window.innerWidth <= 640;
 
       if (!q) {
         searchResults.classList.remove('active');
         searchResults.innerHTML = '';
-        fmPanes.style.display = '';
-        fmSidebar.style.display = '';
+        accordion.style.display = '';
+        if (!isMobile) {
+          fmPanes.style.display = '';
+          fmSidebar.style.display = '';
+          fmBody.style.display = '';
+        }
+        accordion.querySelectorAll('.fm-acc-body').forEach((body, i) => {
+          const cat = categories[i];
+          body.innerHTML = FULL_MENU[cat].map(makeRow).join('');
+          body.classList.remove('open');
+          accordion.querySelectorAll('.fm-acc-header')[i].classList.remove('open');
+        });
         return;
       }
 
-      fmPanes.style.display = 'none';
-      fmSidebar.style.display = 'none';
+      if (isMobile) {
+        accordion.style.display = 'none';
+      } else {
+        fmPanes.style.display = 'none';
+        fmSidebar.style.display = 'none';
+        fmBody.style.display = 'none';
+      }
       searchResults.classList.add('active');
 
       let html = '';
