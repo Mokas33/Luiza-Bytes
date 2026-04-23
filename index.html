@@ -116,72 +116,6 @@
     }
   </style>
 
-  <!-- Menu section — tab & image-wrap styles -->
-  <style>
-    /* ── Specialty card image wrapper ──────────────────────────────
-       Fixed aspect ratio so all cards are the same height regardless
-       of source image dimensions. Works on every screen size.       */
-    .menu-card-img-wrap {
-      width: 100%;
-      aspect-ratio: 4 / 3;
-      overflow: hidden;
-      border-radius: 8px;
-    }
-    .menu-card-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.35s ease;
-    }
-    .menu-card:hover .menu-card-img-wrap img {
-      transform: scale(1.05);
-    }
-
-    /* ── Full-menu tab nav ─────────────────────────────────────────
-       Horizontally scrollable pill tabs — works on narrow phones too */
-    .fm-tabs {
-      display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      gap: 8px;
-      padding-bottom: 12px;
-      margin-bottom: 20px;
-      scrollbar-width: none;          /* Firefox */
-      -ms-overflow-style: none;       /* IE / Edge */
-    }
-    .fm-tabs::-webkit-scrollbar { display: none; }
-
-    .fm-tab-btn {
-      flex-shrink: 0;
-      padding: 7px 18px;
-      border-radius: 50px;
-      border: 2px solid var(--bs-purple, #6f42c1);
-      background: transparent;
-      color: var(--bs-purple, #6f42c1);
-      font-family: 'Poppins', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      white-space: nowrap;
-    }
-    .fm-tab-btn.active,
-    .fm-tab-btn:hover {
-      background: var(--bs-purple, #6f42c1);
-      color: #fff;
-    }
-
-    /* ── Tab panes ─────────────────────────────────────────────── */
-    .fm-pane        { display: none; }
-    .fm-pane.active { display: block; }
-
-    /* ── Italic helper for special-order items ─────────────────── */
-    .fm-italic { font-style: italic; }
-  </style>
-</head>
-<body class="splash-active">
-
   <!-- ── Splash / Loading Screen ── -->
   <div id="splash">
     <span class="splash-title">Luiza Bytes</span>
@@ -206,7 +140,6 @@
           <li class="nav-item"><a class="nav-link" href="#menu">Menu</a></li>
           <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
           <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
-          <!-- Gallery nav link — toggles the gallery section on click -->
           <li class="nav-item">
             <a class="nav-link gallery-toggle-link" href="#gallery" id="galleryNavBtn">
               Gallery <span class="gallery-arrow">▾</span>
@@ -228,52 +161,311 @@
     </a>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════
-       MENU SECTION
-       ─────────────────────────────────────────────────────────────────
-       HOW TO EXTEND THIS MENU:
-       • Specialties grid  → edit the SPECIALTIES array in the <script>
-         block at the bottom of this section (one object per card).
-       • Full menu tabs    → edit the FULL_MENU object in the same script.
-         Each key is a tab label; its value is an array of {name, price}.
-         Adding a new category = adding one new key + array. Done.
-       • No HTML needs to change — the JS renders everything automatically.
-       ═══════════════════════════════════════════════════════════════════ -->
-  <section id="menu" class="container py-5 menu">
+  <!-- ═══ MENU SECTION — redesigned ═══ -->
+  <style>
+    /* ── Specialty cards ── */
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .spec-card {
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(75,0,130,0.10);
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+      cursor: default;
+    }
+    .spec-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(75,0,130,0.18);
+    }
+    .spec-card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+    }
+    .spec-card-body {
+      padding: 10px 12px 12px;
+      text-align: center;
+    }
+    .spec-card-name {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: #2d006e;
+      margin: 0 0 6px;
+    }
+    .spec-price-pill {
+      display: inline-block;
+      background: linear-gradient(135deg, #9370DB, #7B5CC4);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      padding: 4px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Full menu layout ── */
+    .full-menu-wrap {
+      margin-top: 3rem;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 32px rgba(75,0,130,0.13);
+    }
+    .full-menu-header {
+      background: linear-gradient(135deg, #160827 0%, #2e0d5e 100%);
+      padding: 28px 32px 20px;
+    }
+    .full-menu-header h3 {
+      font-family: 'Cormorant', serif;
+      font-style: italic;
+      color: #e8c84a;
+      font-size: 2rem;
+      margin: 0 0 4px;
+      text-shadow: 0 2px 12px rgba(232,200,74,0.2);
+    }
+    .full-menu-header p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.82rem;
+      margin: 0 0 16px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Search bar ── */
+    .menu-search-wrap {
+      position: relative;
+    }
+    .menu-search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: rgba(255,255,255,0.4);
+      pointer-events: none;
+    }
+    #menuSearch {
+      width: 100%;
+      box-sizing: border-box;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.9rem;
+      padding: 10px 14px 10px 40px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    #menuSearch::placeholder { color: rgba(255,255,255,0.35); }
+    #menuSearch:focus {
+      border-color: rgba(232,200,74,0.55);
+      background: rgba(255,255,255,0.12);
+    }
+
+    /* ── Desktop sidebar layout ── */
+    .fm-body {
+      display: flex;
+      background: #160827;
+      min-height: 420px;
+    }
+    .fm-sidebar {
+      width: 180px;
+      flex-shrink: 0;
+      background: rgba(0,0,0,0.25);
+      padding: 16px 0;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      overflow-y: auto;
+      max-height: 520px;
+    }
+    .fm-sidebar-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 10px 18px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.55);
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+      border-left: 3px solid transparent;
+    }
+    .fm-sidebar-btn:hover {
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.85);
+    }
+    .fm-sidebar-btn.active {
+      background: rgba(232,200,74,0.08);
+      color: #e8c84a;
+      border-left-color: #e8c84a;
+      font-weight: 600;
+    }
+    .fm-content {
+      flex: 1;
+      padding: 20px 28px;
+      overflow-y: auto;
+      max-height: 520px;
+    }
+    .fm-pane { display: none; }
+    .fm-pane.active { display: block; }
+
+    /* ── Menu rows ── */
+    .fm-row {
+      display: flex;
+      align-items: center;
+      padding: 11px 4px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .fm-row:hover { background: rgba(255,255,255,0.04); }
+    .fm-row:last-child { border-bottom: none; }
+    .fm-row-name {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.88);
+    }
+    .fm-row-name.italic { font-style: italic; color: rgba(255,255,255,0.55); }
+    .fm-row-dots {
+      flex: 1;
+      border-bottom: 1px dotted rgba(255,255,255,0.12);
+      margin: 0 12px;
+      position: relative;
+      top: -2px;
+    }
+    .fm-row-price {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: #160827;
+      background: #e8c84a;
+      padding: 3px 11px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .fm-row-price.on-request {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.6);
+      font-weight: 400;
+      font-size: 0.75rem;
+    }
+
+    /* ── Search results panel ── */
+    #searchResults {
+      display: none;
+      padding: 20px 28px;
+    }
+    #searchResults.active { display: block; }
+    .search-result-cat {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.7rem;
+      color: rgba(232,200,74,0.75);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin: 16px 0 6px;
+    }
+    .search-result-cat:first-child { margin-top: 0; }
+    .no-results {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    /* ── Mobile accordion (hidden on desktop) ── */
+    .fm-accordion { display: none; }
+    .fm-acc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 20px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.8);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.15s;
+      user-select: none;
+    }
+    .fm-acc-header:hover { background: rgba(255,255,255,0.04); }
+    .fm-acc-header.open { color: #e8c84a; }
+    .fm-acc-arrow {
+      font-size: 0.7rem;
+      transition: transform 0.25s;
+    }
+    .fm-acc-header.open .fm-acc-arrow { transform: rotate(180deg); }
+    .fm-acc-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+      padding: 0 20px;
+    }
+    .fm-acc-body.open {
+      max-height: 1200px;
+      padding: 8px 20px 4px;
+    }
+
+    /* ── Responsive breakpoints ── */
+    @media (max-width: 640px) {
+      .fm-sidebar { display: none; }
+      .fm-content { display: none; }
+      .fm-accordion { display: block; }
+      .full-menu-header { padding: 22px 20px 16px; }
+      .full-menu-header h3 { font-size: 1.6rem; }
+      .fm-body { min-height: unset; }
+      #searchResults { padding: 12px 20px; }
+    }
+    @media (max-width: 480px) {
+      .spec-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+    }
+  </style>
+
+  <section id="menu" class="container py-5">
     <h2 class="text-center mb-4">Our Specialties</h2>
 
     <!-- Specialties grid — rendered by JS -->
-    <div class="row g-4" id="specialtiesGrid"></div>
+    <div class="spec-grid" id="specialtiesGrid"></div>
 
-    <!-- Full Menu Toggle Button -->
-    <div class="text-center mt-5">
-      <button class="btn btn-full-menu" id="fullMenuBtn">
-        View Full Menu <span class="full-menu-arrow">▾</span>
-      </button>
-    </div>
+    <!-- Full Menu Panel — always visible, no toggle needed -->
+    <div class="full-menu-wrap mt-5" id="fullMenuWrap">
 
-    <!-- Full Menu Collapsible Panel -->
-    <div id="fullMenuPanel" class="full-menu-panel full-menu-hidden">
-      <div class="full-menu-inner">
-        <h4 class="full-menu-title">Full Menu</h4>
-        <p class="full-menu-subtitle">All prices are per serving unless stated otherwise.</p>
-
-        <!-- Tab nav — rendered by JS -->
-        <div class="fm-tabs" id="fmTabs" role="tablist"></div>
-
-        <!-- Tab content panes — rendered by JS -->
-        <div id="fmPanes"></div>
+      <!-- Header + search -->
+      <div class="full-menu-header">
+        <h3>Full Menu</h3>
+        <p>All prices are per serving unless stated otherwise.</p>
+        <div class="menu-search-wrap">
+          <span class="menu-search-icon">&#128269;</span>
+          <input type="text" id="menuSearch" placeholder="Search dishes&hellip;" autocomplete="off" spellcheck="false">
+        </div>
       </div>
+
+      <!-- Desktop: sidebar + panes -->
+      <div class="fm-body">
+        <nav class="fm-sidebar" id="fmSidebar" aria-label="Menu categories"></nav>
+        <div class="fm-content" id="fmContent">
+          <div id="fmPanes"></div>
+          <div id="searchResults"></div>
+        </div>
+      </div>
+
+      <!-- Mobile: accordion -->
+      <div class="fm-accordion" id="fmAccordion"></div>
+
     </div>
   </section>
 
   <script>
-    /* ─────────────────────────────────────────────────────────────────
-       MENU DATA
-       To add a specialty card: push a new object into SPECIALTIES.
-       To add a full-menu category: add a new key to FULL_MENU with an
-       array of { name, price } items. That's it — no HTML to touch.
-    ───────────────────────────────────────────────────────────────── */
     const SPECIALTIES = [
       { img: 'fish.jpeg',        alt: 'Fish',        name: 'Fish',        price: 'KSh 600' },
       { img: 'samosa.jpg',       alt: 'Samosas',     name: 'Samosas',     price: 'KSh 50'  },
@@ -288,7 +480,8 @@
         { name: 'Samosas',        price: 'KSh 50'  },
         { name: 'Spring Rolls',   price: 'KSh 150' },
         { name: 'Mandazi',        price: 'KSh 20'  },
-        { name: 'Chapatis',       price: 'KSh 60'  },
+        { name: 'Chapati White',  price: 'KSh 50'  },
+        { name: 'Chapati Brown',  price: 'KSh 60'  },
         { name: 'Pancakes',       price: 'KSh 100' },
         { name: 'Eggs',           price: 'KSh 80'  },
         { name: 'Sausages',       price: 'KSh 50'  },
@@ -309,9 +502,10 @@
         { name: 'Vegetable Rice',  price: 'KSh 200' },
       ],
       'Vegetables': [
-        { name: 'Cabbage', price: 'KSh 50'  },
-        { name: 'Managu',  price: 'KSh 100' },
-        { name: 'Sagaa',   price: 'KSh 120' },
+        { name: 'Cabbage',     price: 'KSh 50'  },
+        { name: 'Managu',      price: 'KSh 100' },
+        { name: 'Sagaa',       price: 'KSh 120' },
+        { name: 'Sukuma Wiki', price: 'KSh 50'  },
       ],
       'Sides': [
         { name: 'Ugali White',    price: 'KSh 80'  },
@@ -321,6 +515,21 @@
         { name: 'Mukimo Plain',   price: 'KSh 150' },
         { name: 'Mukimo Special', price: 'KSh 200' },
         { name: 'Roast Potatoes', price: 'KSh 150' },
+      ],
+      'Tilapia': [
+        { name: 'Fish Plain',        price: 'KSh 600' },
+        { name: 'With Ugali',        price: 'KSh 700' },
+        { name: 'With Chips',        price: 'KSh 650' },
+        { name: 'With Rice',         price: 'KSh 600' },
+        { name: 'Coconut Fish Plain',price: 'KSh 700' },
+      ],
+      'Choma Zone': [
+        { name: 'Beef 1KG',   price: 'KSh 1,000' },
+        { name: 'Beef ½KG',   price: 'KSh 500'   },
+        { name: 'Beef ¼KG',   price: 'KSh 250'   },
+        { name: 'Goat 1KG',   price: 'KSh 1,200' },
+        { name: 'Goat ½KG',   price: 'KSh 600'   },
+        { name: 'Goat ¼KG',   price: 'KSh 300'   },
       ],
       'Mbuzi Corner': [
         { name: 'Dry Fry — Plain',      price: 'KSh 300' },
@@ -336,8 +545,17 @@
         { name: 'Wet Fry with Chapati', price: 'KSh 370' },
         { name: 'Wet Fry with Chips',   price: 'KSh 450' },
       ],
+      'Kuku Kienyeji': [
+        { name: 'Plain',        price: 'KSh 400' },
+        { name: 'With Ugali',   price: 'KSh 480' },
+        { name: 'With Chapati', price: 'KSh 450' },
+        { name: 'With Chips',   price: 'KSh 550' },
+      ],
       'Platters': [
-        { name: 'Pilau, Chips, Beef ¼, 2 Sausages', price: 'KSh 650' },
+        { name: 'Pilau, Chips, Beef ¼, 2 Sausages, Chapati (1), Veggies',                                           price: 'KSh 800'   },
+        { name: 'Pilau, Chips, Potato Wedges, Chicken ½, Beef ½, Sausages, Chapatis, Veggies',                      price: 'KSh 1,600' },
+        { name: 'Potato Wedges, Pilau, Chips, Chicken ¼, Beef ¼, 2 Sausages, Chapatis (2), Mukimo, Veggies',        price: 'KSh 2,600' },
+        { name: 'Kuku Bahati',                                                                                        price: 'KSh 2,500' },
       ],
       'Special Orders': [
         { name: 'Office Breakfast Plans',       price: 'On request', italic: true },
@@ -346,77 +564,150 @@
       ],
     };
 
-    /* ─── Render Specialties Grid ─────────────────────────────────── */
-    const grid = document.getElementById('specialtiesGrid');
+    /* ── Helpers ── */
+    function makeRow(item) {
+      const isRequest = item.price === 'On request';
+      return `<div class="fm-row">
+        <span class="fm-row-name${item.italic ? ' italic' : ''}">${item.name}</span>
+        <span class="fm-row-dots"></span>
+        <span class="fm-row-price${isRequest ? ' on-request' : ''}">${item.price}</span>
+      </div>`;
+    }
+
+    /* ── Render Specialties ── */
+    const specGrid = document.getElementById('specialtiesGrid');
     SPECIALTIES.forEach(item => {
-      grid.insertAdjacentHTML('beforeend', `
-        <div class="col-6 col-md-4">
-          <div class="menu-card">
-            <div class="menu-card-img-wrap">
-              <img src="${item.img}" alt="${item.alt}" loading="lazy">
-            </div>
-            <h5 class="mt-2 text-center">${item.name}</h5>
-            <p class="price-tag">${item.price}</p>
+      specGrid.insertAdjacentHTML('beforeend', `
+        <div class="spec-card">
+          <img class="spec-card-img" src="${item.img}" alt="${item.alt}" loading="lazy">
+          <div class="spec-card-body">
+            <p class="spec-card-name">${item.name}</p>
+            <span class="spec-price-pill">${item.price}</span>
           </div>
         </div>
       `);
     });
 
-    /* ─── Render Full Menu Tabs ───────────────────────────────────── */
-    const tabNav   = document.getElementById('fmTabs');
-    const tabPanes = document.getElementById('fmPanes');
+    /* ── Render Desktop Sidebar + Panes ── */
+    const sidebar  = document.getElementById('fmSidebar');
+    const paneWrap = document.getElementById('fmPanes');
     const categories = Object.keys(FULL_MENU);
 
     categories.forEach((cat, i) => {
-      const id = 'fm-tab-' + i;
-      const isActive = i === 0;
+      const id = 'fmp-' + i;
+      const isFirst = i === 0;
 
-      /* Tab button */
-      tabNav.insertAdjacentHTML('beforeend', `
-        <button class="fm-tab-btn${isActive ? ' active' : ''}"
-                role="tab"
-                aria-selected="${isActive}"
-                aria-controls="${id}"
-                data-tab="${id}">
-          ${cat}
-        </button>
+      sidebar.insertAdjacentHTML('beforeend', `
+        <button class="fm-sidebar-btn${isFirst ? ' active' : ''}"
+                data-pane="${id}">${cat}</button>
       `);
 
-      /* Tab pane */
-      const rows = FULL_MENU[cat].map(item => `
-        <div class="full-menu-row">
-          <span class="fm-name${item.italic ? ' fm-italic' : ''}">${item.name}</span>
-          <span class="fm-dots"></span>
-          <span class="fm-price">${item.price}</span>
-        </div>
-      `).join('');
+      const rows = FULL_MENU[cat].map(makeRow).join('');
+      paneWrap.insertAdjacentHTML('beforeend', `
+        <div class="fm-pane${isFirst ? ' active' : ''}" id="${id}">${rows}</div>
+      `);
+    });
 
-      tabPanes.insertAdjacentHTML('beforeend', `
-        <div class="fm-pane${isActive ? ' active' : ''}" id="${id}" role="tabpanel">
-          ${rows}
+    sidebar.addEventListener('click', function(e) {
+      const btn = e.target.closest('.fm-sidebar-btn');
+      if (!btn) return;
+      sidebar.querySelectorAll('.fm-sidebar-btn').forEach(b => b.classList.remove('active'));
+      paneWrap.querySelectorAll('.fm-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.pane).classList.add('active');
+    });
+
+    /* ── Render Mobile Accordion ── */
+    const accordion = document.getElementById('fmAccordion');
+    categories.forEach((cat, i) => {
+      const bodyId = 'acc-body-' + i;
+      const rows = FULL_MENU[cat].map(makeRow).join('');
+      accordion.insertAdjacentHTML('beforeend', `
+        <div>
+          <div class="fm-acc-header" data-body="${bodyId}">
+            <span>${cat}</span>
+            <span class="fm-acc-arrow">&#9660;</span>
+          </div>
+          <div class="fm-acc-body" id="${bodyId}">${rows}</div>
         </div>
       `);
     });
 
-    /* ─── Tab click handler ───────────────────────────────────────── */
-    tabNav.addEventListener('click', function(e) {
-      const btn = e.target.closest('.fm-tab-btn');
-      if (!btn) return;
-      const targetId = btn.dataset.tab;
+    accordion.addEventListener('click', function(e) {
+      const header = e.target.closest('.fm-acc-header');
+      if (!header) return;
+      const body = document.getElementById(header.dataset.body);
+      const isOpen = body.classList.contains('open');
+      accordion.querySelectorAll('.fm-acc-body').forEach(b => b.classList.remove('open'));
+      accordion.querySelectorAll('.fm-acc-header').forEach(h => h.classList.remove('open'));
+      if (!isOpen) {
+        body.classList.add('open');
+        header.classList.add('open');
+      }
+    });
 
-      tabNav.querySelectorAll('.fm-tab-btn').forEach(b => {
-        b.classList.remove('active');
-        b.setAttribute('aria-selected', 'false');
+    /* ── Live Search ── */
+    const searchInput   = document.getElementById('menuSearch');
+    const searchResults = document.getElementById('searchResults');
+    const fmPanes       = document.getElementById('fmPanes');
+    const fmSidebar     = document.getElementById('fmSidebar');
+
+    searchInput.addEventListener('input', function() {
+      const q = this.value.trim().toLowerCase();
+
+      if (!q) {
+        searchResults.classList.remove('active');
+        searchResults.innerHTML = '';
+        fmPanes.style.display = '';
+        fmSidebar.style.display = '';
+        return;
+      }
+
+      fmPanes.style.display = 'none';
+      fmSidebar.style.display = 'none';
+      searchResults.classList.add('active');
+
+      let html = '';
+      let total = 0;
+
+      categories.forEach(cat => {
+        const matches = FULL_MENU[cat].filter(item =>
+          item.name.toLowerCase().includes(q)
+        );
+        if (matches.length) {
+          total += matches.length;
+          html += `<div class="search-result-cat">${cat}</div>`;
+          html += matches.map(makeRow).join('');
+        }
       });
-      tabPanes.querySelectorAll('.fm-pane').forEach(p => p.classList.remove('active'));
 
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
-      document.getElementById(targetId).classList.add('active');
+      searchResults.innerHTML = total
+        ? html
+        : '<p class="no-results">No dishes found — try a different word.</p>';
+
+      /* Mirror search to accordion on mobile */
+      accordion.querySelectorAll('.fm-acc-body').forEach((body, i) => {
+        const cat = categories[i];
+        const matches = FULL_MENU[cat].filter(item =>
+          item.name.toLowerCase().includes(q)
+        );
+        const header = accordion.querySelectorAll('.fm-acc-header')[i];
+        if (matches.length) {
+          body.innerHTML = matches.map(makeRow).join('');
+          body.classList.add('open');
+          header.classList.add('open');
+        } else {
+          body.innerHTML = '';
+          body.classList.remove('open');
+          header.classList.remove('open');
+        }
+      });
     });
   </script>
 
-  <!-- About Section -->
+
+
+    <!-- About Section -->
   <section id="about" class="container py-5">
     <h2 class="text-center mb-4">About Luiza Bytes</h2>
     <div class="row">
@@ -534,6 +825,18 @@
           <img src="mandazi.jpeg" alt="Mandazi" loading="lazy">
           <div class="gallery-overlay"><span>Delicious Mandazi</span></div>
         </div>
+        <div class="masonry-item">
+          <img src="beef spring rolls.jpg" alt="Beef Spring Rolls" loading="lazy">
+          <div class="gallery-overlay"><span>Beef Spring Rolls</span></div>
+        </div>
+        <div class="masonry-item">
+          <img src="samosa.jpg" alt="Samosas" loading="lazy">
+          <div class="gallery-overlay"><span>Crispy Samosas</span></div>
+        </div>
+        <div class="masonry-item">
+          <img src="matoke.jpeg" alt="Matoke" loading="lazy">
+          <div class="gallery-overlay"><span>Matoke</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -602,13 +905,13 @@
       <input type="hidden" name="_subject" value="New message from Luiza Bytes Website">
 
       <div class="mb-3">
-        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+        <input type="text" name="name" class="form-control" placeholder="Your Name" aria-label="Your Name" required>
       </div>
       <div class="mb-3">
-        <input type="email" name="email" class="form-control" placeholder="Your Email" id="emailField" required>
+        <input type="email" name="email" class="form-control" placeholder="Your Email" id="emailField" aria-label="Your Email" required>
       </div>
       <div class="mb-3">
-        <textarea class="form-control" name="message" rows="4" placeholder="Your Message" required></textarea>
+        <textarea class="form-control" name="message" rows="4" placeholder="Your Message" aria-label="Your Message" required></textarea>
       </div>
       <button type="submit" class="btn btn-success" id="submitBtn">Send Message</button>
       <div id="formMsg" class="mt-3"></div>
@@ -697,8 +1000,10 @@ window.addEventListener('load', function() {
       }
     });
     // ── Sync email → hidden _replyto field so Formspree sets Reply-To ──
-    document.getElementById('emailField').addEventListener('input', function() {
-      document.getElementById('replyToField').value = this.value;
+    ['input', 'change'].forEach(function(evt) {
+      document.getElementById('emailField').addEventListener(evt, function() {
+        document.getElementById('replyToField').value = this.value;
+      });
     });
 
     // ── Contact form ────────────────────────────────────────────────
